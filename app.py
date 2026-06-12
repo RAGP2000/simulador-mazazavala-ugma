@@ -76,7 +76,7 @@ if submit_btn:
             
             # Llamada al modelo
             response = client.chat.completions.create(
-                model="meta-llama/llama-3.1-8b-instruct:free",
+                model="google/gemini-3.5-flash-exp:free",
                 messages=[
                     {"role": "system", "content": prompt_sistema},
                     {"role": "user", "content": prompt_usuario}
