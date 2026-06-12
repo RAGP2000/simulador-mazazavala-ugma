@@ -1,3 +1,4 @@
 streamlit>=1.30.0
-google-genai
+openai
+duckduckgo-search
 gtts
