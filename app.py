@@ -76,7 +76,7 @@ if submit_btn:
             
             # Llamada al modelo
             response = client.chat.completions.create(
-                model="mistralai/mistral-7b-instruct:free",
+                model="google/gemma-2-9b-it:free",
                 messages=[
                     {"role": "system", "content": prompt_sistema},
                     {"role": "user", "content": prompt_usuario}
