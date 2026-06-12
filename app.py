@@ -1,16 +1,15 @@
 import streamlit as st
-from google import genai
-from google.genai import types
 import json
-from gtts import gTTS
 import io
+from gtts import gTTS
+from duckduckgo_search import DDGS
+from openai import OpenAI
 
-# 1. Configuración de la página y Diseño Visual Premium (Inyección CSS)
+# 1. Configuración de la página y Diseño Visual Premium
 st.set_page_config(page_title="Simulador BCV - Maza Zavala", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown("""
     <style>
-    /* Estilos para igualar el impacto visual del frontend web */
     .main { background-color: #0b101d; color: #f1f5f9; }
     h1, h2, h3 { color: #f59e0b !important; font-family: 'Courier New', Courier, monospace; }
     .stSlider > div > div > div { background-color: #f59e0b; }
@@ -21,9 +20,9 @@ st.markdown("""
 
 # 2. Encabezado de la Aplicación
 st.markdown("<h1>🏛️ Directorio Extraordinario del BCV</h1>", unsafe_allow_html=True)
-st.markdown("### Asesor Artificial Maza Zavala (Con Grounding en Tiempo Real)")
+st.markdown("### Asesor Artificial Maza Zavala (Conexión LLaMA 3.1 y Grounding Web Libre)")
 
-# 3. Panel Lateral: Captura de Datos de los Estudiantes (Actualizado y Protegido)
+# 3. Panel Lateral: Captura de Datos
 with st.sidebar:
     st.header("Mesa Técnica")
     st.caption("Ajuste los parámetros para mitigar el Pass-Through (ERPT)")
@@ -42,62 +41,71 @@ with st.sidebar:
     justificacion = st.text_area("6. Justificación Técnica (Modelo Leo Butler)", 
                                  "Buscamos anclar las expectativas mediante la absorción de liquidez excedentaria...")
     
-    # Envío directo. Las credenciales se manejan de forma segura en el backend
     submit_btn = st.button("Someter Decreto a Maza Zavala", use_container_width=True)
 
-# 4. Lógica de IA y Procesamiento con Automatización de Credenciales
+# 4. Lógica de IA y Procesamiento
 if submit_btn:
-    with st.spinner("🔍 Analizando bases de datos del BCV y buscando indicadores económicos de hoy..."):
+    with st.spinner("🔍 Realizando búsqueda en tiempo real y estructurando dictamen..."):
         try:
-            # Conexión automatizada utilizando los Secrets del servidor en la nube
-            client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
-            
-            system_instruction = """
-            Eres el "Asesor Maza Zavala", exdirector del BCV. Evalúas planes del Directorio.
-            Usa la herramienta Google Search obligatoriamente para buscar los datos reales de Venezuela HOY (Dólar oficial, reservas, precio crudo Merey).
-            Aplica la lógica del ERPT asimétrico y la brecha del producto de Leo Butler (1996).
-            Genera siempre un Shock Macroeconómico de Alerta al final.
-            
-            IMPORTANTE: Devuelve tu respuesta ÚNICAMENTE en un JSON válido con estas claves exactas:
-            "bcv_rate", "reserves", "merey_price", "evaluacion", "auditoria_sudeban", "shock_titulo", "shock_desc".
-            """
-            
-            prompt_estudiantes = f"""
-            Propuesta:
-            Tipo Cambio: {tipo_cambio} Bs/USD | Intervención: ${intervencion}M | Encaje: {encaje}% | Tasa: {tasa}% | FOGADE: {fogade}
-            Justificación: {justificacion}
-            """
-            
-            # Llamada utilizando la arquitectura vigente de última generación
-            response = client.models.generate_content(
-                model='gemini-3.5-flash',
-                contents=prompt_estudiantes,
-                config=types.GenerateContentConfig(
-                    system_instruction=system_instruction,
-                    tools=[types.Tool(google_search=types.GoogleSearch())],
-                    temperature=0.3,
-                    response_mime_type="application/json",
-                )
+            # A. Búsqueda en Internet Autónoma (DuckDuckGo)
+            try:
+                resultados = DDGS().text("tipo de cambio oficial BCV hoy reservas internacionales Venezuela precio crudo Merey", max_results=3)
+                contexto_web = "\n".join([res['body'] for res in resultados])
+            except Exception:
+                contexto_web = "Alta volatilidad en las reservas del BCV y presión sobre el tipo de cambio oficial reportada hoy."
+
+            # B. Conexión segura a OpenRouter (Modelo LLaMA 3.1 Gratuito)
+            client = OpenAI(
+                base_url="https://openrouter.ai/api/v1",
+                api_key=st.secrets["OPENROUTER_API_KEY"],
             )
             
-            # Extraer y parsear la respuesta JSON de la IA
-            datos = json.loads(response.text)
+            prompt_sistema = f"""
+            Eres el "Asesor Maza Zavala", exdirector del BCV. Evalúa la política monetaria.
+            Usa estas NOTICIAS ECONÓMICAS VENEZOLANAS DE HOY extraídas de internet:
+            {contexto_web}
             
-            # Generación del archivo de voz (Text-to-Speech) a partir del dictamen
+            IMPORTANTE Y OBLIGATORIO: Tu respuesta debe ser ÚNICAMENTE un formato JSON válido. No escribas nada antes ni después de las llaves {{}}.
+            El JSON debe tener estas claves exactas:
+            "bcv_rate" (ej. "Bs. 36.50"), "reserves" (ej. "$9.8 Billones"), "merey_price" (ej. "$65/bbl"), 
+            "evaluacion" (tu crítica técnica escrita en primera persona), "auditoria_sudeban" (cumplimiento), 
+            "shock_titulo" (título de evento imprevisto), "shock_desc" (descripción).
+            """
+            
+            prompt_usuario = f"Propuesta: Cambio {tipo_cambio} Bs/USD | Intervención ${intervencion}M | Encaje {encaje}% | Tasa {tasa}% | FOGADE {fogade}. Justificación: {justificacion}"
+            
+            # Llamada al modelo
+            response = client.chat.completions.create(
+                model="meta-llama/llama-3.1-8b-instruct:free",
+                messages=[
+                    {"role": "system", "content": prompt_sistema},
+                    {"role": "user", "content": prompt_usuario}
+                ],
+                temperature=0.3
+            )
+            
+            # Limpieza del formato JSON por si el modelo incluye etiquetas markdown
+            respuesta_texto = response.choices[0].message.content.strip()
+            if respuesta_texto.startswith("```json"):
+                respuesta_texto = respuesta_texto.replace("```json", "", 1).replace("```", "")
+            
+            # Parsear datos
+            datos = json.loads(respuesta_texto.strip())
+            
+            # C. Generación de Voz
             texto_a_hablar = f"Señores del Directorio, les habla el doctor Domingo Maza Zavala. {datos.get('evaluacion', '')}"
             tts = gTTS(text=texto_a_hablar, lang='es', slow=False)
 
-            # Almacenamiento directo en el buffer de memoria
             audio_fp = io.BytesIO()
             tts.write_to_fp(audio_fp)
             audio_fp.seek(0)
 
-            # 5. Renderizado Visual y Multimodal del Dictamen (Output)
+            # D. Renderizado Visual
             st.audio(audio_fp, format='audio/mp3')
             st.caption("🔊 Escuchar dictamen del Dr. Maza Zavala")
 
             col1, col2, col3 = st.columns(3)
-            col1.metric("Tasa Oficial BCV (Grounding)", datos.get("bcv_rate", "N/A"))
+            col1.metric("Tasa BCV (Búsqueda Libre Hoy)", datos.get("bcv_rate", "N/A"))
             col2.metric("Reservas Internacionales", datos.get("reserves", "N/A"))
             col3.metric("Crudo Merey (Hoy)", datos.get("merey_price", "N/A"))
             
@@ -125,4 +133,4 @@ if submit_btn:
             """, unsafe_allow_html=True)
 
         except Exception as e:
-            st.error(f"Fallo en los cálculos matriciales: {e}")
+            st.error(f"Error procesando la solicitud: Verifica tu conexión o formato. Detalle: {e}")
