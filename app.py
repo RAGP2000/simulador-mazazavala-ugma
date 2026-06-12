@@ -93,7 +93,7 @@ if submit_btn:
                 "evaluacion": eval_texto,
                 "auditoria_sudeban": "Se requiere monitorear los índices de liquidez de la banca.",
                 "shock_titulo": "Presión Inflacionaria Repentina",
-                "shock_desc": "La liquidez excedentaria ha impactado el mercado paralelo. Ajusten la política en los próximos 5 minutos."
+                "shock_desc": "La liquidez excedentaria ha impactado el mercado paralelo. Ajusten la política en los próximos 10 minutos."
             }
 
         # 5. Generación de Voz y Renderizado Visual
