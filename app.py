@@ -10,17 +10,23 @@ st.set_page_config(page_title="Simulador BCV - Maza Zavala", layout="wide", init
 
 st.markdown("""
     <style>
-    .main { background-color: #0b101d; color: #f1f5f9; }
+    .main { background-color: #0b101d; color: #ffffff; }
     h1, h2, h3 { color: #f59e0b !important; font-family: 'Courier New', Courier, monospace; }
     .stSlider > div > div > div { background-color: #f59e0b; }
-    .metric-box { background-color: #0f172a; border: 1px solid #1e293b; padding: 15px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-bottom: 15px;}
-    .alert-box { background-color: #450a0a; border: 1px solid #7f1d1d; padding: 15px; border-radius: 10px; border-left: 4px solid #ef4444; margin-top: 20px;}
+    
+    /* Forzado de color blanco puro en los recuadros */
+    .metric-box { background-color: #0f172a; border: 1px solid #1e293b; padding: 15px; border-radius: 10px; border-left: 4px solid #f59e0b; margin-bottom: 15px; color: #ffffff !important;}
+    .alert-box { background-color: #450a0a; border: 1px solid #7f1d1d; padding: 15px; border-radius: 10px; border-left: 4px solid #ef4444; margin-top: 20px; color: #ffffff !important;}
+    
+    /* Asegurar que todos los párrafos y negritas hereden el blanco */
+    .metric-box p, .metric-box em, .metric-box strong, 
+    .alert-box p, .alert-box em, .alert-box strong { color: #ffffff !important; }
     </style>
 """, unsafe_allow_html=True)
 
 # 2. Encabezado
 st.markdown("<h1>🏛️ Directorio Extraordinario del BCV</h1>", unsafe_allow_html=True)
-st.markdown("### Asesor Artificial Maza Zavala")
+st.markdown("### Asesor Artificial Maza Zavala (Con Sistema de Rescate de Alta Disponibilidad)")
 
 # 3. Panel Lateral
 with st.sidebar:
@@ -81,16 +87,16 @@ if submit_btn:
                 eval_texto += f"El alivio del encaje al {encaje}% dinamiza la banca, pero inyectará liquidez peligrosa."
 
             datos = {
-                "bcv_rate": "Bs. 582,6862",
-                "reserves": "$12.404 Mill",
-                "merey_price": "$82,77/bbl",
+                "bcv_rate": "Bs. 45.30 (Promedio)",
+                "reserves": "$9.1 Billones",
+                "merey_price": "$61.50/bbl",
                 "evaluacion": eval_texto,
                 "auditoria_sudeban": "Se requiere monitorear los índices de liquidez de la banca.",
                 "shock_titulo": "Presión Inflacionaria Repentina",
                 "shock_desc": "La liquidez excedentaria ha impactado el mercado paralelo. Ajusten la política en los próximos 5 minutos."
             }
 
-        # 5. Generación de Voz y Renderizado Visual (Funciona con la API o con el Fallback)
+        # 5. Generación de Voz y Renderizado Visual
         try:
             texto_a_hablar = f"Señores del Directorio, les habla el doctor Domingo Maza Zavala. {datos.get('evaluacion', '')}"
             tts = gTTS(text=texto_a_hablar, lang='es', slow=False)
@@ -111,21 +117,21 @@ if submit_btn:
         st.markdown(f"""
         <div class="metric-box">
             <h3 style="margin-top:0;">Dictamen del Dr. Maza Zavala</h3>
-            <p style="font-size: 1.1rem; line-height: 1.6;"><em>"{datos.get('evaluacion', '')}"</em></p>
+            <p style="font-size: 1.1rem; line-height: 1.6; color: #ffffff;"><em>"{datos.get('evaluacion', '')}"</em></p>
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown(f"""
         <div class="metric-box" style="border-left-color: #10b981;">
             <h4 style="margin-top:0; color: #10b981;">Auditoría Regulatoria (SUDEBAN)</h4>
-            <p>{datos.get('auditoria_sudeban', '')}</p>
+            <p style="color: #ffffff;">{datos.get('auditoria_sudeban', '')}</p>
         </div>
         """, unsafe_allow_html=True)
         
         st.markdown(f"""
         <div class="alert-box">
             <h3 style="margin-top:0; color: #ef4444;">🚨 CHOQUE MACROECONÓMICO INMINENTE</h3>
-            <strong>{datos.get('shock_titulo', '')}</strong>
-            <p>{datos.get('shock_desc', '')}</p>
+            <strong style="color: #ffffff;">{datos.get('shock_titulo', '')}</strong>
+            <p style="color: #ffffff;">{datos.get('shock_desc', '')}</p>
         </div>
         """, unsafe_allow_html=True)
