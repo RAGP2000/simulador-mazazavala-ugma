@@ -81,8 +81,8 @@ if submit_btn:
                 eval_texto += f"El alivio del encaje al {encaje}% dinamiza la banca, pero inyectará liquidez peligrosa."
 
             datos = {
-                "bcv_rate": "Bs. 582,6862 (12/06/2026)",
-                "reserves": "$12.404 Millones (10/06/2026)",
+                "bcv_rate": "Bs. 582,6862",
+                "reserves": "$12.404 Mill",
                 "merey_price": "$82,77/bbl",
                 "evaluacion": eval_texto,
                 "auditoria_sudeban": "Se requiere monitorear los índices de liquidez de la banca.",
