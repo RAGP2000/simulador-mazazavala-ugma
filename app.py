@@ -26,7 +26,7 @@ st.markdown("""
 
 # 2. Encabezado
 st.markdown("<h1>🏛️ Directorio Extraordinario del BCV</h1>", unsafe_allow_html=True)
-st.markdown("### Asesor Artificial Maza Zavala (Con Sistema de Rescate de Alta Disponibilidad)")
+st.markdown("### Asesor Artificial Maza Zavala")
 
 # 3. Panel Lateral
 with st.sidebar:
